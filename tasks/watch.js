@@ -1,6 +1,6 @@
 'use strict';
 
-const browserSync = require('browser-sync').create('liferay-watch');
+const browserSync = require('browser-sync').create('liferay-osgi-watch');
 const configs = require('./lib/configs');
 const fs = require('fs');
 const gulp = require('gulp');
@@ -29,7 +29,7 @@ const notify = (message) => {
 		message: message
 	}, {
 		icon: path.resolve(__dirname, '../icon.png'),
-		title: 'liferay-watch',
+		title: 'liferay-osgi-watch',
 		timeout: 8
 	});
 	notifier.notify(config);
