@@ -23,7 +23,7 @@ One example of why you would need to add this file is if you have your gogo shel
 
 ```
 {
-    gogoPort: 11312
+    "gogoPort": 11312
 }
 ```
 
