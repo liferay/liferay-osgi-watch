@@ -11,9 +11,9 @@ const replaceAmdDefine = require('./lib/replaceAmdDefine');
 const tap = require('gulp-tap');
 const filter = require('gulp-filter');
 
-gulp.task('build-javascript', (done) => {
-	gutil.log(gutil.colors.magenta('javascript'), 'Transpiling files. This may take a while.');
-	return gulp.src([configs.globJs])
+gulp.task('build-javascript-es6', (done) => {
+	gutil.log(gutil.colors.magenta('javascript-es6'), 'Transpiling files. This may take a while.');
+	return gulp.src([configs.globEs6])
 	.pipe(cache('build-javascript'))
 	.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
 	.pipe(filter(['**/*.js', '!**/*.soy.js']))
@@ -26,5 +26,12 @@ gulp.task('build-javascript', (done) => {
 	}))
 	.pipe(replaceAmdDefine())
 	.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
-	.pipe(duration('javascript'));
+	.pipe(duration('javascript-es6'));
+});
+
+gulp.task('build-javascript', (done) => {
+	gutil.log(gutil.colors.magenta('javascript-es5'), 'Copying ES5 files.');
+	return gulp.src([configs.globJs, '!' + configs.globEs6])
+	.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
+	.pipe(duration('javascript-es5'));
 });

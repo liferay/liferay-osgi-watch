@@ -53,19 +53,24 @@ gulp.task('watch', ['unjar'], function(done) {
 			if (global.browserSync) {
 				runSequence('browser-sync');
 			}
+			// Java
 			gulp.task('watch-java', () => runSequence('build-java', 'install', 'notify'));
 			gulp.watch(configs.globJava, ['watch-java']);
+			// JavaScript. For ES5 files, we only need to call build-javascript and copy them over.
 			gulp.task('watch-javascript', () => runSequence('build-javascript', 'notify'));
-			gulp.watch(configs.globJs, ['watch-javascript']);
+			gulp.watch([configs.globJs, '!' + configs.globEs6], ['watch-javascript']);
+			// JavaScript. For ES5 files, we need to call build-javascript-es6 so that they get transpiled.
+			gulp.task('watch-javascript-es6', () => runSequence('build-javascript-es6', 'notify'));
+			gulp.watch(configs.globEs6, ['watch-javascript-es6']);
+			// JSP
 			gulp.task('watch-jsp', () => runSequence('build-jsp', 'install', 'notify'));
 			gulp.watch(configs.globJsp, ['watch-jsp']);
+			// SASS
 			gulp.task('watch-sass', () => runSequence('build-sass', 'notify'));
 			gulp.watch(configs.globSass, ['watch-sass']);
+			// Soy
 			gulp.task('watch-soy', () => runSequence('build-soy', 'notify'));
 			gulp.watch(configs.globSoy, ['watch-soy']);
-			process.on('exit', function() {
-				console.log('we should link the bundle back to the jar at this point.');
-			});
 			notify('Ready! Waiting for changes.');
 			done();
 		}
