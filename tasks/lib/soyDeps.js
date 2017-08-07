@@ -1,7 +1,7 @@
 'use strict';
 
-const childProcess = require('child_process');
 const configs = require('./configs');
+const gradle = require('./gradle');
 const path = require('path');
 
 module.exports = () => {
@@ -10,14 +10,8 @@ module.exports = () => {
 			resolve(global.soyDeps);
 		}
 		else {
-			const cp = childProcess.spawn('gradle', ['dependencies', '--configuration', 'soyCompile'], { cwd: process.cwd() });
-			let gradleOutput = '';
-			cp.stdout.on('data', (data) => {
-				gradleOutput += data.toString();
-			});
-			cp.stderr.pipe(process.stderr);
-			cp.on('exit', (code) => {
-				if (code === 0) {
+			gradle(['dependencies', '--configuration', 'soyCompile']).then(
+				(gradleOutput) => {
 					const makeSoyDepGlob = dep => path.join('build', dep, 'META-INF/resources', '**/*.soy');
 					let soyDeps = Object.keys(configs.soyCompile || []).map(makeSoyDepGlob);
 					soyDeps = soyDeps.concat(
@@ -33,11 +27,11 @@ module.exports = () => {
 					);
 					global.soyDeps = soyDeps;
 					resolve(soyDeps);
+				},
+				(error) => {
+					reject(new Error('Unable to call gradle to get soy dependencies.'));
 				}
-				else {
-					reject(new Error('Unable to call gardle to get soy dependencies.'));
-				}
-			});
+			);
 		}
 	});
 };

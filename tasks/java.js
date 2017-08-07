@@ -1,8 +1,8 @@
 'use strict';
 
-const childProcess = require('child_process');
 const configs = require('./lib/configs');
 const duration = require('gulp-duration');
+const gradle = require('./lib/gradle');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const projectDeps = require('./lib/projectDeps');
@@ -27,19 +27,18 @@ gulp.task('build-java', (done) => {
 	const javaTimer = duration('java');
 	projectDeps().then((projects) => {
 		gutil.log(gutil.colors.magenta('java'), 'Compiling Java');
-		const cp = childProcess.spawn('gradle', buildGradleArgs(projects), { cwd: process.cwd() });
-		cp.stderr.pipe(process.stderr);
-		cp.on('exit', (code) => {
-			if (code === 0) {
+
+		gradle(buildGradleArgs(projects)).then(
+			(gradleOutput) => {
 				gulp.src(configs.globClass)
-				.pipe(javaTimer)
-				.pipe(gulp.dest(configs.pathExploded))
-				.on('end', () => done());
-			}
-			else {
+					.pipe(javaTimer)
+					.pipe(gulp.dest(configs.pathExploded))
+					.on('end', () => done());
+			},
+			() => {
 				gutil.log(gutil.colors.magenta('java'), gutil.colors.red('Errors compiling Java. Check compiler output.'));
 				done();
 			}
-		});
+		);
 	});
 });
