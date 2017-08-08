@@ -30,8 +30,6 @@ gulp.task('unjar', (done) => {
 			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
 		}
 
-		console.log(jarPath);
-
 		if (!fs.existsSync(jarPath)) {
 			throw new Error('Unable to find installed bundle.');
 		}
