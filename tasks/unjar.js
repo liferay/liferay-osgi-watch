@@ -27,11 +27,15 @@ gulp.task('unjar', (done) => {
 		let jarPath = path.join(liferayHome, 'osgi/modules', info.symbolicName + '.jar');
 
 		if (!fs.existsSync(jarPath)) {
-			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
+			jarPath = path.join(liferayHome, 'osgi/portal', info.symbolicName + '.jar');
 		}
 
 		if (!fs.existsSync(jarPath)) {
-			throw new Error('Unable to find installed bundle.');
+			jarPath = path.join(liferayHome, 'osgi/marketplace/override', info.symbolicName + '.jar');
+		}
+
+		if (!fs.existsSync(jarPath)) {
+			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
 		}
 
 		if (!fs.existsSync(jarPath)) {
