@@ -24,7 +24,7 @@ gulp.task('unjar', (done) => {
 		return gogo.getLiferayHome();
 	})
 	.then((liferayHome) => new Promise((resolve, reject) => {
-		let jarPath = path.join(liferayHome, 'osgi/modules', info.symbolicName, '.jar');
+		let jarPath = path.join(liferayHome, 'osgi/modules', info.symbolicName + '.jar');
 
 		if (!fs.existsSync(jarPath)) {
 			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
@@ -34,11 +34,16 @@ gulp.task('unjar', (done) => {
 			throw new Error('Unable to find installed bundle.');
 		}
 
-		gulp.src(jarPath)
-		.pipe(unzip())
-		.pipe(unjarTimer)
-		.pipe(gulp.dest(path.resolve(configs.pathExploded)))
-		.on('end', () => resolve());
+		if (!fs.existsSync(jarPath)) {
+			reject(new Error('Unable to find installed bundle.'));
+		}
+		else {
+			gulp.src(jarPath)
+			.pipe(unzip())
+			.pipe(unjarTimer)
+			.pipe(gulp.dest(path.resolve(configs.pathExploded)))
+			.on('end', () => resolve());
+		}
 	}))
 	.catch((error) => console.error(error));
 });
