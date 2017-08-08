@@ -4,6 +4,26 @@ const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+const getGradleChildProcess = (args) => {
+	const cwd = process.cwd();
+
+	const gradleSettingsFilePath = path.join(cwd, '..', 'settings.gradle');
+
+	if (!fs.existsSync(gradleSettingsFilePath)) {
+		return childProcess.spawn('gradle', args, { cwd });
+	}
+
+	const gradleSettingsTempFilePath = gradleSettingsFilePath + '.tmp';
+
+	fs.renameSync(gradleSettingsFilePath, gradleSettingsTempFilePath);
+
+	const cp = childProcess.spawn('gradle', args, { cwd });
+
+	cp.on('exit', () => fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath));
+
+	return cp;
+}
+
 const getGradlePath = () => {
 	if (global.gradlePath) {
 		return global.gradlePath;
@@ -26,7 +46,7 @@ module.exports = (args) => {
 	return new Promise((resolve, reject) => {
 		const gradlePath = getGradlePath();
 
-		const cp = childProcess.spawn(gradlePath, args, { cwd: process.cwd() });
+		const cp = getGradleChildProcess(args);
 		let gradleOutput = '';
 		cp.stdout.on('data', (data) => {
 			gradleOutput += data.toString();
