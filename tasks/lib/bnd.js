@@ -9,7 +9,15 @@ class Bnd {
 		return Bnd.getSymbolicName(dir).then(symbolicName => symbolicName + '.jar');
 	}
 
+	static getBundleVersion(dir) {
+		return Bnd.getProperty(dir, 'Bundle-Version');
+	}
+
 	static getSymbolicName(dir) {
+		return Bnd.getProperty(dir, 'Bundle-SymbolicName');
+	}
+
+	static getProperty(dir, property) {
 		return new Promise((resolve, reject) => {
 			const bnd = path.join(dir, 'bnd.bnd');
 			try {
@@ -20,7 +28,7 @@ class Bnd {
 				var foundName = false;
 
 				reader.on('line', function(line) {
-					if (line.indexOf('Bundle-SymbolicName') === 0) {
+					if (line.indexOf(property) === 0) {
 						const parts = line.split(':');
 
 						foundName = true;

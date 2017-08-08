@@ -3,6 +3,7 @@
 const bnd = require('./lib/bnd');
 const configs = require('./lib/configs');
 const duration = require('gulp-duration');
+const fs = require('fs');
 const gogo = require('./lib/gogo');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
@@ -13,13 +14,29 @@ gulp.task('unjar', (done) => {
 	const unjarTimer = duration('unjar');
 	gutil.log(gutil.colors.magenta('unjar'), 'Unpacking deployed bundle');
 	const info = {};
-	return bnd.getJarName(process.cwd())
-	.then((jarName) => {
-		info.jarName = jarName;
+	return bnd.getSymbolicName(process.cwd())
+	.then((symbolicName) => {
+		info.symbolicName = symbolicName;
+		return bnd.getBundleVersion(process.cwd());
+	})
+	.then((bundleVersion) => {
+		info.bundleVersion = bundleVersion;
 		return gogo.getLiferayHome();
 	})
 	.then((liferayHome) => new Promise((resolve, reject) => {
-		gulp.src(path.join(liferayHome, 'osgi/modules', info.jarName))
+		let jarPath = path.join(liferayHome, 'osgi/modules', info.symbolicName, '.jar');
+
+		if (!fs.existsSync(jarPath)) {
+			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
+		}
+
+		console.log(jarPath);
+
+		if (!fs.existsSync(jarPath)) {
+			throw new Error('Unable to find installed bundle.');
+		}
+
+		gulp.src(jarPath)
 		.pipe(unzip())
 		.pipe(unjarTimer)
 		.pipe(gulp.dest(path.resolve(configs.pathExploded)))
