@@ -4,7 +4,7 @@ const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const getGradleChildProcess = (args) => {
+const getGradleChildProcess = args => {
 	const cwd = process.cwd();
 
 	const gradlePath = getGradlePath();
@@ -21,10 +21,12 @@ const getGradleChildProcess = (args) => {
 
 	const cp = childProcess.spawn(gradlePath, args, { cwd });
 
-	cp.on('exit', () => fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath));
+	cp.on('exit', () =>
+		fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath)
+	);
 
 	return cp;
-}
+};
 
 const getGradlePath = () => {
 	if (global.gradlePath) {
@@ -34,7 +36,11 @@ const getGradlePath = () => {
 	let gradleWrapperFolder = process.cwd();
 	let gradlePath = path.join(gradleWrapperFolder, 'gradlew');
 
-	while (gradleWrapperFolder && (gradleWrapperFolder != '/') && !fs.existsSync(gradlePath)) {
+	while (
+		gradleWrapperFolder &&
+		gradleWrapperFolder != '/' &&
+		!fs.existsSync(gradlePath)
+	) {
 		gradleWrapperFolder = path.dirname(gradleWrapperFolder);
 		gradlePath = path.join(gradleWrapperFolder, 'gradlew');
 	}
@@ -44,20 +50,26 @@ const getGradlePath = () => {
 	return global.gradlePath;
 };
 
-module.exports = (args) => {
+module.exports = args => {
 	return new Promise((resolve, reject) => {
 		const cp = getGradleChildProcess(args);
 		let gradleOutput = '';
-		cp.stdout.on('data', (data) => {
+		cp.stdout.on('data', data => {
 			gradleOutput += data.toString();
 		});
 		cp.stderr.pipe(process.stderr);
-		cp.on('exit', (code) => {
+		cp.on('exit', code => {
 			if (code === 0) {
 				resolve(gradleOutput);
-			}
-			else {
-				reject(new Error('Unable to call ' + getGradlePath() + ' ' + args.join(' ')));
+			} else {
+				reject(
+					new Error(
+						'Unable to call ' +
+							getGradlePath() +
+							' ' +
+							args.join(' ')
+					)
+				);
 			}
 		});
 	});

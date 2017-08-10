@@ -2,11 +2,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const readline  = require('readline');
+const readline = require('readline');
 
 class Bnd {
 	static getJarName(dir) {
-		return Bnd.getSymbolicName(dir).then(symbolicName => symbolicName + '.jar');
+		return Bnd.getSymbolicName(dir).then(
+			symbolicName => symbolicName + '.jar'
+		);
 	}
 
 	static getBundleVersion(dir) {
@@ -25,7 +27,7 @@ class Bnd {
 					input: fs.createReadStream(bnd)
 				});
 
-				var foundName = false;
+				let foundName = false;
 
 				reader.on('line', function(line) {
 					if (line.indexOf(property) === 0) {
@@ -42,8 +44,7 @@ class Bnd {
 						resolve(path.basename(process.cwd()));
 					}
 				});
-			}
-			catch (e) {
+			} catch (e) {
 				reject(Error('Could not open bnd file.'));
 			}
 		});
