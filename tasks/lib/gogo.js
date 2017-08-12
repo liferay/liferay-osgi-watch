@@ -6,7 +6,7 @@ const configs = require('./configs');
 module.exports = {
 	getBundleId: symbolicName => {
 		const gogoShell = new GogoShell();
-		const command = 'lb -s ' + symbolicName + ' | grep Active';
+		const command = 'each [($.context bundles)] { if { ($it symbolicName) equals "' + symbolicName + '" } { $it bundleId } { "" } }';
 		return gogoShell
 			.connect({ port: configs.gogoPort })
 			.then(() => gogoShell.sendCommand(command))
@@ -14,16 +14,12 @@ module.exports = {
 				gogoShell.end();
 				const info = data
 					.split('\n')
-					.filter(
-						line =>
-							line.indexOf(symbolicName) > -1 &&
-							line.trim() !== command
-					)
-					.map(line => line.trim());
+					.map(line => line.trim())
+					.filter(line => !isNaN(parseFloat(line)) && isFinite(line));
 				if (info.length === 0) {
 					throw new Error('Could not find installed bundle.');
 				}
-				return info[0].split('|').shift();
+				return info[0];
 			});
 	},
 
