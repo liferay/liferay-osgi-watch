@@ -48,5 +48,5 @@
     "format": "prettier-eslint --use-tabs true --tab-width 4 --single-quote --write tasks/**/*.js",
     "lint": "eslint tasks/**/*.js --fix"
   },
-  "version": "2.4.5"
+  "version": "2.4.6"
 }
