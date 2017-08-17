@@ -14,6 +14,7 @@ gulp.task('build', (done) => {
 	Promise.all([
 		new Promise((resolve) => runSequence('build-java', resolve)),
 		new Promise((resolve) => runSequence('build-javascript', resolve)),
+		new Promise((resolve) => runSequence('build-javascript-es6', resolve)),
 		new Promise((resolve) => runSequence('build-jsp', resolve)),
 		new Promise((resolve) => runSequence('build-sass', resolve)),
 		new Promise((resolve) => runSequence('build-soy', resolve))
