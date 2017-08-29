@@ -1,7 +1,9 @@
 'use strict';
 
+const ant = require('./lib/ant');
 const configs = require('./lib/configs');
 const duration = require('gulp-duration');
+const fs = require('fs');
 const gradle = require('./lib/gradle');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
@@ -28,14 +30,16 @@ gulp.task('build-java', (done) => {
 	projectDeps().then((projects) => {
 		gutil.log(gutil.colors.magenta('java'), 'Compiling Java');
 
-		gradle(buildGradleArgs(projects)).then(
-			(gradleOutput) => {
+		let compileResult = fs.existsSync('build.gradle') ? gradle(buildGradleArgs(projects)) : ant(['compile']);
+
+		compileResult.then(
+			(compileOutput) => {
 				gulp.src(configs.globClass)
 					.pipe(javaTimer)
 					.pipe(gulp.dest(configs.pathExploded))
 					.on('end', () => done());
 			},
-			() => {
+			(compileError) => {
 				gutil.log(gutil.colors.magenta('java'), gutil.colors.red('Errors compiling Java. Check compiler output.'));
 				done();
 			}

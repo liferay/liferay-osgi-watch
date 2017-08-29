@@ -1,0 +1,7 @@
+{
+	"globClass": "docroot/WEB-INF/classes/**/*.class",
+	"globJava": "docroot/WEB-INF/src/**/*.java",
+	"globJs": "docroot/**/*.js",
+	"globJsp": "docroot/**/*.jsp",
+	"globSass": "docroot/**/*.scss"
+}

@@ -36,11 +36,13 @@ gulp.task('unzip-portal-common-css', [], (done) => {
 });
 
 gulp.task('build-sass', ['unzip-portal-common-css'], (done) => {
+	let globDestination = (configs.globJs.indexOf('META-INF/resources') != -1) ? path.join(configs.pathExploded, 'META-INF/resources') : configs.pathExploded;
+
 	gutil.log(gutil.colors.magenta('sass'), 'Processing files');
 	return gulp.src(configs.globSass)
 	.pipe(sass({
 		includePaths: ['build/portal-common-css']
 	}))
 	.pipe(duration('sass'))
-	.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')));
+	.pipe(gulp.dest(globDestination));
 });

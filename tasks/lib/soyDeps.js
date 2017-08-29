@@ -2,6 +2,7 @@
 
 const bnd = require('./bnd');
 const configs = require('./configs');
+const fs = require('fs');
 const gradle = require('./gradle');
 const path = require('path');
 
@@ -33,7 +34,7 @@ module.exports = () => {
 	return new Promise((resolve, reject) => {
 		if (global.soyDeps) {
 			resolve(global.soyDeps);
-		} else {
+		} else if (fs.existsSync('build.gradle')) {
 			gradle(['dependencies', '--configuration', 'soyCompile']).then(
 				gradleOutput => {
 					let soyDeps = Object.keys(configs.soyCompile || []).map(
@@ -64,6 +65,8 @@ module.exports = () => {
 					);
 				}
 			);
+		} else {
+			resolve([]);
 		}
 	});
 };

@@ -5,6 +5,13 @@ const gutil = require('gulp-util');
 const path = require('path');
 
 let configs = require('../../config.json');
+
+
+
+if (fs.existsSync(path.join(process.cwd(), 'build.xml'))) {
+	configs = Object.assign(configs, require('../../config-ant.json'));
+}
+
 const userConfigsPath = path.resolve(require('os').homedir(), '.lwatch.json');
 if (fs.existsSync(userConfigsPath)) {
 	configs = Object.assign(configs, require(userConfigsPath));

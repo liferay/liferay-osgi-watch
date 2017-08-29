@@ -17,29 +17,52 @@ gulp.task('unjar', (done) => {
 	return bnd.getSymbolicName(process.cwd())
 	.then((symbolicName) => {
 		info.symbolicName = symbolicName;
+		return gogo.getBundleId(symbolicName);
+	})
+	.then((bundleId) => {
+		info.bundleId = bundleId;
 		return bnd.getBundleVersion(process.cwd());
 	})
 	.then((bundleVersion) => {
 		info.bundleVersion = bundleVersion;
+		return bnd.getJarName(process.cwd());
+	})
+	.then((jarName) => {
+		info.jarName = jarName;
 		return gogo.getLiferayHome();
 	})
 	.then((liferayHome) => new Promise((resolve, reject) => {
-		let jarPath = path.join(liferayHome, 'osgi/modules', info.symbolicName + '.jar');
+		let extension = info.jarName.substring(info.jarName.length - 4);
 
-		if (!fs.existsSync(jarPath)) {
-			jarPath = path.join(liferayHome, 'osgi/portal', info.symbolicName + '.jar');
+		let stateFolder = path.join(liferayHome, 'osgi', 'state', 'org.eclipse.osgi', String(info.bundleId));
+		let latestStateFolderItem = fs.readdirSync(stateFolder).map(parseInt).sort().map(String).pop();
+		let jarPath = latestStateFolderItem ? path.join(stateFolder, latestStateFolderItem, 'bundleFile') : info.jarName;
+
+		if (extension == '.jar') {
+			if (!fs.existsSync(jarPath)) {
+				jarPath = path.join(liferayHome, 'osgi/modules', info.jarName);
+			}
+
+			if (!fs.existsSync(jarPath)) {
+				jarPath = path.join(liferayHome, 'osgi/portal', info.jarName);
+			}
+
+			if (!fs.existsSync(jarPath)) {
+				jarPath = path.join(liferayHome, 'osgi/marketplace/override', info.jarName);
+			}
+
+			if (!fs.existsSync(jarPath)) {
+				jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
+			}
 		}
 
 		if (!fs.existsSync(jarPath)) {
-			jarPath = path.join(liferayHome, 'osgi/marketplace/override', info.symbolicName + '.jar');
-		}
-
-		if (!fs.existsSync(jarPath)) {
-			jarPath = path.join(process.cwd(), 'build/libs', info.symbolicName + '-' + info.bundleVersion + '.jar');
-		}
-
-		if (!fs.existsSync(jarPath)) {
-			reject(new Error('Unable to find installed bundle ' + info.symbolicName));
+			if (fs.existsSync(configs.pathExploded)) {
+				resolve();
+			}
+			else {
+				reject(new Error('Unable to find installed bundle ' + info.symbolicName));
+			}
 		}
 		else {
 			gulp.src(jarPath)
