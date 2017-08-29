@@ -17,7 +17,7 @@ module.exports = {
 					.map(line => line.trim())
 					.filter(line => !isNaN(parseFloat(line)) && isFinite(line));
 				if (info.length === 0) {
-					throw new Error('Could not find installed bundle.');
+					throw new Error('Could not find installed bundle ' + symbolicName);
 				}
 				return info[0];
 			});

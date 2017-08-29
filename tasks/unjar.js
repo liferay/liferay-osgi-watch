@@ -39,7 +39,7 @@ gulp.task('unjar', (done) => {
 		}
 
 		if (!fs.existsSync(jarPath)) {
-			reject(new Error('Unable to find installed bundle.'));
+			reject(new Error('Unable to find installed bundle ' + info.symbolicName));
 		}
 		else {
 			gulp.src(jarPath)
