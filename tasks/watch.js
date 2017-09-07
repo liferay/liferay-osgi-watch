@@ -12,8 +12,11 @@ const runSequence = require('run-sequence');
 
 gulp.task('build', (done) => {
 	let promises = [];
+	gutil.log(gutil.colors.magenta('build'), 'Fast-building entire project');
 
 	if (fs.existsSync('build.gradle')) {
+		gutil.log(gutil.colors.green('build'), 'OSGi project detected');
+
 		promises = [
 			new Promise((resolve) => runSequence('build-java', resolve)),
 			new Promise((resolve) => runSequence('build-javascript', resolve)),
@@ -23,7 +26,9 @@ gulp.task('build', (done) => {
 			new Promise((resolve) => runSequence('build-soy', resolve))
 		];
 	}
-	else if (fs.exists('build.xml')) {
+	else if (fs.existsSync('build.xml')) {
+		gutil.log(gutil.colors.green('build'), 'Legacy WAR project detected');
+
 		promises = [
 			new Promise((resolve) => runSequence('build-java', resolve)),
 			new Promise((resolve) => runSequence('build-javascript', resolve)),
