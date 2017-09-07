@@ -10,13 +10,14 @@ const path = require('path');
 gulp.task('build-jsp', [], function(done) {
 	const buildJspTimer = duration('jsp');
 	gutil.log(gutil.colors.magenta('jsp'), 'Copying files');
-	gulp.src(config.globJsp)
-	.pipe(buildJspTimer)
-	.pipe(gulp.dest(path.join(config.pathExploded, 'META-INF/resources')))
-	.on('end', () => {
-		if (global.browserSync) {
-			browserSync.get('liferay-osgi-watch').reload();
-		}
-		done();
-	});
+	gulp
+		.src(config.globJsp)
+		.pipe(buildJspTimer)
+		.pipe(gulp.dest(path.join(config.pathExploded, 'META-INF/resources')))
+		.on('end', () => {
+			if (global.browserSync) {
+				browserSync.get('liferay-osgi-watch').reload();
+			}
+			done();
+		});
 });

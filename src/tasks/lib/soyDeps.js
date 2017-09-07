@@ -18,7 +18,7 @@ const parseGradleDependencyOutput = dependency => {
 			const parts = relativeFormat.substr(1).split(':');
 			const relativeDir = path.relative(parts.join('/'), process.cwd());
 			const projectDir = path.resolve(
-				path.join(relativeDir, parts.join('/'))
+				path.join(relativeDir, parts.join('/')),
 			);
 
 			bnd.getSymbolicName(projectDir).then(symbolicName => {
@@ -38,20 +38,20 @@ module.exports = () => {
 			gradle(['dependencies', '--configuration', 'soyCompile']).then(
 				gradleOutput => {
 					let soyDeps = Object.keys(configs.soyCompile || []).map(
-						makeSoyDepGlob
+						makeSoyDepGlob,
 					);
 					soyDeps = soyDeps.concat(
 						gradleOutput
 							.split('\n')
 							.filter(line => line.indexOf('\\--- ') === 0)
 							.map(depLine =>
-								parseGradleDependencyOutput(depLine)
-							)
+								parseGradleDependencyOutput(depLine),
+							),
 					);
 					Promise.all(soyDeps).then(dependencies => {
 						dependencies.push(
 							'node_modules/lexicon*/src/**/*.soy',
-							'node_modules/metal*/src/**/*.soy'
+							'node_modules/metal*/src/**/*.soy',
 						);
 						global.soyDeps = dependencies;
 						resolve(dependencies);
@@ -60,10 +60,10 @@ module.exports = () => {
 				error => {
 					reject(
 						new Error(
-							'Unable to call gradle to get soy dependencies.'
-						)
+							'Unable to call gradle to get soy dependencies.',
+						),
 					);
-				}
+				},
 			);
 		} else {
 			resolve([]);

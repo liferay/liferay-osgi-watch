@@ -15,16 +15,16 @@ const yargs = require('yargs')
 		return require('../package').version;
 	});
 
-require('../gulpfile');
+require('../lib/gulpfile');
 
 if (yargs.argv.browser) {
 	global.browserSync = true;
 }
 
-const configs = require('../tasks/lib/configs');
-const soyDeps = require('../tasks/lib/soyDeps');
+const configs = require('../lib/tasks/lib/configs');
+const soyDeps = require('../lib/tasks/lib/soyDeps');
 
-soyDeps().then((soyDependencies) => {
+soyDeps().then(soyDependencies => {
 	configs.soyDeps = soyDependencies;
 	gulp.start.apply(gulp, ['watch']);
 });

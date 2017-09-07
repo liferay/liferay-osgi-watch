@@ -22,7 +22,7 @@ const getGradleChildProcess = args => {
 	const cp = childProcess.spawn(gradlePath, args, { cwd });
 
 	cp.on('exit', () =>
-		fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath)
+		fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath),
 	);
 
 	return cp;
@@ -67,8 +67,8 @@ module.exports = args => {
 						'Unable to call ' +
 							getGradlePath() +
 							' ' +
-							args.join(' ')
-					)
+							args.join(' '),
+					),
 				);
 			}
 		});

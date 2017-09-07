@@ -18,7 +18,7 @@ readJson(
 		}
 		moduleName = data.name;
 		moduleVersion = data.version;
-	}
+	},
 );
 
 module.exports = () =>
@@ -27,7 +27,7 @@ module.exports = () =>
 			process.cwd(),
 			file.path
 				.replace(configs.pathExploded + '/META-INF/resources', '')
-				.replace('.js', '')
+				.replace('.js', ''),
 		);
 		file.contents = new Buffer(
 			String(file.contents).replace(
@@ -38,7 +38,7 @@ module.exports = () =>
 					moduleVersion +
 					'/' +
 					resourcesPath +
-					'", ['
-			)
+					'", [',
+			),
 		);
 	});

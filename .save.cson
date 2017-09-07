@@ -1,0 +1,6 @@
+"src/**/*": [
+  "npm run build"
+]
+"bin/**/*": [
+  "npm run build"
+]

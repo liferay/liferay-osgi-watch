@@ -14,7 +14,7 @@ module.exports = () => {
 						.split('\n')
 						.filter(line => line.indexOf('project :') > -1)
 						.map(depLine =>
-							depLine.replace(/(\+|\\)--- project /, '')
+							depLine.replace(/(\+|\\)--- project /, ''),
 						);
 
 					global.projectDeps = projectDeps;
@@ -24,10 +24,10 @@ module.exports = () => {
 				error => {
 					reject(
 						new Error(
-							'Unable to call gradle to get compile dependencies.'
-						)
+							'Unable to call gradle to get compile dependencies.',
+						),
 					);
-				}
+				},
 			);
 		} else {
 			resolve([]);
