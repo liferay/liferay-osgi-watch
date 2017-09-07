@@ -7,7 +7,7 @@ module.exports = () => {
 	return new Promise((resolve, reject) => {
 		if (global.projectDeps) {
 			resolve(global.projectDeps);
-		} else if (fs.exists('build.gradle')) {
+		} else if (fs.existsSync('build.gradle')) {
 			gradle(['dependencies', '--configuration', 'compile']).then(
 				gradleOutput => {
 					let projectDeps = gradleOutput
