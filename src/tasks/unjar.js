@@ -2,18 +2,19 @@
 
 const bnd = require('./lib/bnd');
 const configs = require('./lib/configs');
-const duration = require('gulp-duration');
 const fs = require('fs');
 const gogo = require('./lib/gogo');
 const gulp = require('gulp');
-const gutil = require('gulp-util');
+const log = require('./lib/log');
 const path = require('path');
 const unzip = require('gulp-unzip');
 
 gulp.task('unjar', done => {
-	const unjarTimer = duration('unjar');
-	gutil.log(gutil.colors.magenta('unjar'), 'Unpacking deployed bundle');
+	const start = process.hrtime();
 	const info = {};
+
+	log.info('unjar', 'Unpacking deployed bundle');
+
 	return bnd
 		.getSymbolicName(process.cwd())
 		.then(symbolicName => {
@@ -103,8 +104,7 @@ gulp.task('unjar', done => {
 						} else {
 							reject(
 								new Error(
-									'Unable to find installed bundle ' +
-										info.symbolicName,
+									`Exploded directory path not found: ${info.symbolicName}`,
 								),
 							);
 						}
@@ -112,11 +112,13 @@ gulp.task('unjar', done => {
 						gulp
 							.src(jarPath)
 							.pipe(unzip())
-							.pipe(unjarTimer)
 							.pipe(gulp.dest(path.resolve(configs.pathExploded)))
-							.on('end', () => resolve());
+							.on('end', () => {
+								log.duration('unjar', start);
+								resolve();
+							});
 					}
 				}),
 		)
-		.catch(error => console.error(error));
+		.catch(error => log.error('unjar', error));
 });

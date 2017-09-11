@@ -1,6 +1,7 @@
 'use strict';
 
 const configs = require('./configs');
+const log = require('./log');
 const path = require('path');
 const tap = require('gulp-tap');
 const readJson = require('read-package-json');
@@ -13,7 +14,11 @@ readJson(
 	false,
 	(er, data) => {
 		if (er) {
-			console.error('There was an error reading package.json');
+			log.warn(
+				'replaceAmdDefine',
+				'No package.json file found (AMD defines -if used- will not ' +
+					'contain package name and version)',
+			);
 			return;
 		}
 		moduleName = data.name;

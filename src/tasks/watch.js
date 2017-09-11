@@ -4,18 +4,19 @@ const browserSync = require('browser-sync').create('liferay-osgi-watch');
 const configs = require('./lib/configs');
 const fs = require('fs');
 const gulp = require('gulp');
-const gutil = require('gulp-util');
+const log = require('./lib/log');
 const notifier = require('node-notifier');
 const path = require('path');
-const pretty = require('pretty-hrtime');
 const runSequence = require('run-sequence');
 
 gulp.task('build', done => {
+	const start = process.hrtime();
 	let promises = [];
-	gutil.log(gutil.colors.magenta('build'), 'Fast-building entire project');
+
+	log.info('build', 'Building entire project');
 
 	if (fs.existsSync('build.gradle')) {
-		gutil.log(gutil.colors.green('build'), 'OSGi project detected');
+		log.info('build', 'OSGi project detected');
 
 		promises = [
 			new Promise(resolve => runSequence('build-java', resolve)),
@@ -28,7 +29,7 @@ gulp.task('build', done => {
 			new Promise(resolve => runSequence('build-soy', resolve)),
 		];
 	} else if (fs.existsSync('build.xml')) {
-		gutil.log(gutil.colors.green('build'), 'Legacy WAR project detected');
+		log.info('build', 'Legacy WAR project detected');
 
 		promises = [
 			new Promise(resolve => runSequence('build-java', resolve)),
@@ -38,7 +39,10 @@ gulp.task('build', done => {
 		];
 	}
 
-	Promise.all(promises).then(() => done());
+	Promise.all(promises).then(() => {
+		log.duration('build', start);
+		done();
+	});
 });
 
 const notify = message => {
@@ -64,15 +68,11 @@ gulp.task('notify', done => {
 });
 
 gulp.task('watch', ['unjar'], function(done) {
-	const timeStart = process.hrtime();
+	const start = process.hrtime();
+
 	runSequence('build', 'install', () => {
-		const duration = pretty(process.hrtime(timeStart));
-		const gulpPrefix = '[' + gutil.colors.green('gulp') + ']';
-		console.log(
-			gulpPrefix + ' startup took:',
-			gutil.colors.magenta(duration),
-		);
-		gutil.log(gutil.colors.magenta('watch'), 'Listening for changes');
+		log.duration('startup', start);
+		log.info('build', `Listening for changes`);
 		if (global.browserSync) {
 			runSequence('browser-sync');
 		}

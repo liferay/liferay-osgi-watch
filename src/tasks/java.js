@@ -2,11 +2,10 @@
 
 const ant = require('./lib/ant');
 const configs = require('./lib/configs');
-const duration = require('gulp-duration');
 const fs = require('fs');
 const gradle = require('./lib/gradle');
 const gulp = require('gulp');
-const gutil = require('gulp-util');
+const log = require('./lib/log');
 const projectDeps = require('./lib/projectDeps');
 
 const buildGradleArgs = projects => {
@@ -34,10 +33,11 @@ const buildGradleArgs = projects => {
 };
 
 gulp.task('build-java', done => {
-	const javaTimer = duration('java');
-	projectDeps().then(projects => {
-		gutil.log(gutil.colors.magenta('java'), 'Compiling Java');
+	const start = process.hrtime();
 
+	log.info('build-java', 'Compiling Java classes');
+
+	projectDeps().then(projects => {
 		let compileResult = fs.existsSync('build.gradle')
 			? gradle(buildGradleArgs(projects))
 			: ant(['compile']);
@@ -46,16 +46,16 @@ gulp.task('build-java', done => {
 			compileOutput => {
 				gulp
 					.src(configs.globClass)
-					.pipe(javaTimer)
 					.pipe(gulp.dest(configs.pathExploded))
-					.on('end', () => done());
+					.on('end', () => {
+						log.duration('build-java', start);
+						done();
+					});
 			},
 			compileError => {
-				gutil.log(
-					gutil.colors.magenta('java'),
-					gutil.colors.red(
-						'Errors compiling Java. Check compiler output.',
-					),
+				log.error(
+					'build-java',
+					'Java classes could not be compiled (👆👆 check compiler output 👆👆)',
 				);
 				done();
 			},

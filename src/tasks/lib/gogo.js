@@ -21,7 +21,8 @@ module.exports = {
 					.filter(line => !isNaN(parseFloat(line)) && isFinite(line));
 				if (info.length === 0) {
 					throw new Error(
-						'Could not find installed bundle ' + symbolicName,
+						`Could not find installed bundle ${symbolicName} ` +
+							'(you must first install it before running lwatch)',
 					);
 				}
 				return info[0];
