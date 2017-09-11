@@ -44,7 +44,10 @@ module.exports = {
 				if (info.length === 0) {
 					throw new Error('Could not find liferay.home.');
 				}
-				return info[0].split('=').pop().trim();
+				return info[0]
+					.split('=')
+					.pop()
+					.trim();
 			});
 	},
 
