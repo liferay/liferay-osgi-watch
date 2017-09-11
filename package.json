@@ -30,18 +30,20 @@
 		"yargs": "^4.4.0"
 	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
 		"eslint": "^4.1.1",
 		"eslint-config-liferay": "^1.0.2",
 		"prettier": "^1.5.2",
 		"prettier-eslint": "^6.4.2",
 		"prettier-eslint-cli": "^4.1.1"
 	},
-	"keywords": ["liferay-osgi-watch"],
+	"keywords": [
+		"liferay-osgi-watch"
+	],
 	"name": "liferay-osgi-watch",
 	"scripts": {
 		"build": "babel --source-maps -D -d lib src",
-		"format":
-			"prettier --use-tabs true --tab-width 4 --single-quote --trailing-comma all --write 'src/**/*.js' 'bin/**/*.js'",
+		"format": "prettier --use-tabs true --tab-width 4 --single-quote --trailing-comma all --write 'src/**/*.js' 'bin/**/*.js'",
 		"lint": "eslint 'src/**/*.js' 'bin/**/*.js'",
 		"precommit": "lint-staged",
 		"prepublish": "npm run build"
