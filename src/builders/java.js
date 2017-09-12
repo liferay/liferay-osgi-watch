@@ -1,12 +1,12 @@
 'use strict';
 
-const ant = require('./lib/ant');
-const configs = require('./lib/configs');
+const ant = require('../util/ant');
+const configs = require('../util/configs');
 const fs = require('fs');
-const gradle = require('./lib/gradle');
+const gradle = require('../util/gradle');
 const gulp = require('gulp');
-const log = require('./lib/log');
-const projectDeps = require('./lib/projectDeps');
+const log = require('../util/log');
+const projectDeps = require('../util/projectDeps');
 
 const buildGradleArgs = projects => {
 	const skippedTasks = [
@@ -34,6 +34,7 @@ const buildGradleArgs = projects => {
 
 gulp.task('build-java', done => {
 	const start = process.hrtime();
+	const cfg = configs.builders.java;
 
 	log.info('build-java', 'Compiling Java classes');
 
@@ -45,7 +46,7 @@ gulp.task('build-java', done => {
 		compileResult.then(
 			compileOutput => {
 				gulp
-					.src(configs.globClass)
+					.src(cfg.config.outputGlob)
 					.pipe(gulp.dest(configs.pathExploded))
 					.on('end', () => {
 						log.duration('build-java', start);

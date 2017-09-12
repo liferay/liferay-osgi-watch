@@ -1,10 +1,10 @@
 'use strict';
 
-const configs = require('./lib/configs');
+const configs = require('../util/configs');
 const fs = require('fs');
-const gogo = require('./lib/gogo');
+const gogo = require('../util/gogo');
 const gulp = require('gulp');
-const log = require('./lib/log');
+const log = require('../util/log');
 const path = require('path');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
@@ -57,20 +57,18 @@ gulp.task('unzip-portal-common-css', [], done => {
 
 gulp.task('build-sass', ['unzip-portal-common-css'], done => {
 	const start = process.hrtime();
-	const globDestination =
-		configs.globJs.indexOf('META-INF/resources') != -1
-			? path.join(configs.pathExploded, 'META-INF/resources')
-			: configs.pathExploded;
+	const cfg = configs.builders.sass;
+	const destination = path.join(configs.pathExploded, cfg.outputDir || '');
 
 	log.info('build-sass', 'Building CSS files');
 
 	return gulp
-		.src(configs.globSass)
+		.src(cfg.glob)
 		.pipe(
 			sass({
 				includePaths: ['build/portal-common-css'],
 			}),
 		)
-		.pipe(gulp.dest(globDestination))
+		.pipe(gulp.dest(destination))
 		.on('end', () => log.duration('build-sass', start));
 });
