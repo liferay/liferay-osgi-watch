@@ -12,13 +12,13 @@ const getGradleChildProcess = args => {
 
 	const gradleSettingsFilePath = path.join(cwd, '..', 'settings.gradle');
 
+	if (!fs.existsSync(gradleSettingsFilePath)) {
+		return childProcess.spawn(gradlePath, args, { cwd });
+	}
+
 	const gradleSettingsTempFilePath = gradleSettingsFilePath + '.tmp';
 
 	if (configs.ignoreGradleSettings) {
-		if (!fs.existsSync(gradleSettingsFilePath)) {
-			return childProcess.spawn(gradlePath, args, { cwd });
-		}
-
 		fs.renameSync(gradleSettingsFilePath, gradleSettingsTempFilePath);
 	}
 
