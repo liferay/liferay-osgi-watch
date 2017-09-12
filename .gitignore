@@ -1,4 +1,4 @@
 node_modules/
 lib/
-!src/tasks/lib/
+!src/lib/
 yarn.lock
