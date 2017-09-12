@@ -4,6 +4,7 @@ const bnd = require('./bnd');
 const configs = require('./configs');
 const fs = require('fs');
 const gradle = require('./gradle');
+const log = require('./log');
 const path = require('path');
 
 const makeSoyDepGlob = dependency =>
@@ -58,11 +59,11 @@ module.exports = () => {
 					});
 				},
 				error => {
-					reject(
-						new Error(
-							'Unable to call gradle to get soy dependencies.',
-						),
+					log.warn(
+						`Unable to get soyCompile dependencies from gradle.
+						 Trying to continue without it...`,
 					);
+					resolve([]);
 				},
 			);
 		} else {
