@@ -37,5 +37,6 @@
 			"glob": "src/main/resources/META-INF/resources/**/*.soy",
 			"skipInstall": true
 		}
-	}
+	},
+	"ignoreGradleSettings": false
 }

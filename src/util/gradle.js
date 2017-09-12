@@ -1,6 +1,7 @@
 'use strict';
 
 const childProcess = require('child_process');
+const configs = require('./configs');
 const fs = require('fs');
 const path = require('path');
 
@@ -11,19 +12,23 @@ const getGradleChildProcess = args => {
 
 	const gradleSettingsFilePath = path.join(cwd, '..', 'settings.gradle');
 
-	if (!fs.existsSync(gradleSettingsFilePath)) {
-		return childProcess.spawn(gradlePath, args, { cwd });
-	}
-
 	const gradleSettingsTempFilePath = gradleSettingsFilePath + '.tmp';
 
-	fs.renameSync(gradleSettingsFilePath, gradleSettingsTempFilePath);
+	if (configs.ignoreGradleSettings) {
+		if (!fs.existsSync(gradleSettingsFilePath)) {
+			return childProcess.spawn(gradlePath, args, { cwd });
+		}
+
+		fs.renameSync(gradleSettingsFilePath, gradleSettingsTempFilePath);
+	}
 
 	const cp = childProcess.spawn(gradlePath, args, { cwd });
 
-	cp.on('exit', () =>
-		fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath),
-	);
+	if (configs.ignoreGradleSettings) {
+		cp.on('exit', () =>
+			fs.renameSync(gradleSettingsTempFilePath, gradleSettingsFilePath),
+		);
+	}
 
 	return cp;
 };
