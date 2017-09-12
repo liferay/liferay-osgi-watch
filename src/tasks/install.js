@@ -1,10 +1,10 @@
 'use strict';
 
-const bnd = require('./lib/bnd');
-const configs = require('./lib/configs');
-const gogo = require('./lib/gogo');
+const bnd = require('../util/bnd');
+const configs = require('../util/configs');
+const gogo = require('../util/gogo');
 const gulp = require('gulp');
-const log = require('./lib/log');
+const log = require('../util/log');
 const path = require('path');
 
 gulp.task('install', [], () => {
