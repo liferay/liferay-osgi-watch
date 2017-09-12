@@ -1,0 +1,13 @@
+{
+	"builders": {
+		"java": {
+			"glob": "docroot/WEB-INF/src/**/*.java",
+			"config": {
+				"outputGlob": "docroot/WEB-INF/classes/**/*.class"
+			}
+		},
+		"javascript": { "glob": "docroot/**/*.js" },
+		"jsp": { "glob": "docroot/**/*.jsp" },
+		"sass": { "glob": "docroot/**/*.scss" }
+	}
+}

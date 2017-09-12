@@ -1,4 +1,5 @@
 {
 	"gogoPort": 11311,
+	"notifications": false,
 	"pathExploded": "build/exploded"
 }

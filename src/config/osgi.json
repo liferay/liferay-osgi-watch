@@ -1,0 +1,41 @@
+{
+	"builders": {
+		"java": {
+			"glob": "src/main/java/**/*.java",
+			"config": {
+				"outputGlob": "classes/**/*.class"
+			}
+		},
+		"javascript": {
+			"glob": [
+				"src/main/resources/META-INF/resources/**/*.js",
+				"!src/main/resources/META-INF/resources/**/*.es.js"
+			],
+			"skipInstall": true,
+			"config": {
+				"outputDir": "META-INF/resources"
+			}
+		},
+		"javascript-es6": {
+			"glob": [
+				"src/main/resources/META-INF/resources/**/*.es.js",
+				"!src/main/resources/META-INF/resources/**/*.js"
+			],
+			"skipInstall": true
+		},
+		"jsp": {
+			"glob": "src/main/resources/META-INF/resources/**/*.jsp"
+		},
+		"sass": {
+			"glob": "src/main/resources/META-INF/resources/**/*.scss",
+			"skipInstall": true,
+			"config": {
+				"outputDir": "META-INF/resources"
+			}
+		},
+		"soy": {
+			"glob": "src/main/resources/META-INF/resources/**/*.soy",
+			"skipInstall": true
+		}
+	}
+}

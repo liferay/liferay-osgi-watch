@@ -1,9 +1,0 @@
-{
-	"globClass": "classes/**/*.class",
-	"globEs6": "src/main/resources/META-INF/resources/**/*.es.js",
-	"globJava": "src/main/java/**/*.java",
-	"globJs": "src/main/resources/META-INF/resources/**/*.js",
-	"globJsp": "src/main/resources/META-INF/resources/**/*.jsp",
-	"globSass": "src/main/resources/META-INF/resources/**/*.scss",
-	"globSoy": "src/main/resources/META-INF/resources/**/*.soy"
-}
