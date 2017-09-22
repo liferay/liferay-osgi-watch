@@ -12,7 +12,7 @@ const replaceAmdDefine = require('../util/replaceAmdDefine');
 
 gulp.task('build-soy', () => {
 	const start = process.hrtime();
-	const cfg = configs.builders.sass;
+	const cfg = configs.builders.soy;
 
 	log.info('build-soy', 'Compiling soy files');
 
