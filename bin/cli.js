@@ -21,10 +21,4 @@ if (yargs.argv.browser) {
 
 require('../lib/gulpfile');
 
-const configs = require('../lib/util/configs');
-const soyDeps = require('../lib/util/soyDeps');
-
-soyDeps().then(soyDependencies => {
-	configs.soyDeps = soyDependencies;
-	gulp.start.apply(gulp, ['watch']);
-});
+gulp.start.apply(gulp, ['watch']);
