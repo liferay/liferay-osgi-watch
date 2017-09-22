@@ -8,7 +8,10 @@ const path = require('path');
 gulp.task('build-javascript', done => {
 	const start = process.hrtime();
 	const cfg = configs.builders['javascript'];
-	const destination = path.join(configs.pathExploded, cfg.outputDir || '');
+	const destination = path.join(
+		configs.pathExploded,
+		cfg.config.outputDir || '',
+	);
 
 	log.info('build-javascript', 'Copying Javascript files');
 
