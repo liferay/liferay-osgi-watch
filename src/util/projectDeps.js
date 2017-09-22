@@ -25,8 +25,8 @@ module.exports = () => {
 				error => {
 					log.warn(
 						'projectDeps',
-						'Unable to get compile dependencies from gradle. ' + 
-						'Trying to continue without it...',
+						'Unable to get compile dependencies from gradle. ' +
+							'Trying to continue without it...',
 					);
 					resolve([]);
 				},

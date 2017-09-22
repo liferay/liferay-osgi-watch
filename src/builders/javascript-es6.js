@@ -7,7 +7,6 @@ const gulp = require('gulp');
 const log = require('../util/log');
 const path = require('path');
 const replaceAmdDefine = require('../util/replaceAmdDefine');
-const tap = require('gulp-tap');
 const filter = require('gulp-filter');
 
 gulp.task('build-javascript-es6', ['build-soy'], done => {

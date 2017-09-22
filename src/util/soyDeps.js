@@ -61,8 +61,8 @@ module.exports = () => {
 				error => {
 					log.warn(
 						'soyDeps',
-						'Unable to get soyCompile dependencies from gradle. ' + 
-						'Trying to continue without it...',
+						'Unable to get soyCompile dependencies from gradle. ' +
+							'Trying to continue without it...',
 					);
 					resolve([]);
 				},
