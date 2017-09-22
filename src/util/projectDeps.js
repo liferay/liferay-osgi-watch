@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const gradle = require('./gradle');
+const log = require('./log');
 
 module.exports = () => {
 	return new Promise((resolve, reject) => {
@@ -22,11 +23,12 @@ module.exports = () => {
 					resolve(projectDeps);
 				},
 				error => {
-					reject(
-						new Error(
-							'Unable to call gradle to get compile dependencies.',
-						),
+					log.warn(
+						'projectDeps',
+						'Unable to get compile dependencies from gradle. ' + 
+						'Trying to continue without it...',
 					);
+					resolve([]);
 				},
 			);
 		} else {
