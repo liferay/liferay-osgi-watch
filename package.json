@@ -48,5 +48,5 @@
 		"precommit": "lint-staged",
 		"prepublish": "npm run build"
 	},
-	"version": "2.5.7"
+	"version": "2.5.8"
 }
