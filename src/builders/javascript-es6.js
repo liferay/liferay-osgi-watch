@@ -10,7 +10,7 @@ const replaceAmdDefine = require('../util/replaceAmdDefine');
 const tap = require('gulp-tap');
 const filter = require('gulp-filter');
 
-gulp.task('build-javascript-es6', done => {
+gulp.task('build-javascript-es6', ['build-soy'], done => {
 	const start = process.hrtime();
 	const cfg = configs.builders['javascript-es6'];
 
@@ -20,22 +20,15 @@ gulp.task('build-javascript-es6', done => {
 		.src(cfg.glob)
 		.pipe(cache('build-javascript'))
 		.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
-		.pipe(filter(['**/*.js', '!**/*.soy.js']))
+		.pipe(filter(['**/*.js']))
 		.pipe(
 			buildAmd({
+				base: path.join(configs.pathExploded, 'META-INF/resources'),
 				cacheNamespace: 'transpile',
 				moduleName: '',
 			}),
 		)
-		.pipe(
-			tap(file => {
-				file.path = file.path.replace(
-					path.join(configs.pathExploded, 'META-INF/resources'),
-					'',
-				);
-			}),
-		)
 		.pipe(replaceAmdDefine())
 		.pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
-		.on('end', () => log.duration('build-java', start));
+		.on('end', () => log.duration('build-javascript-es6', start));
 });
