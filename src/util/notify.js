@@ -9,20 +9,20 @@ const path = require('path');
  * @return {void}
  */
 function notify(message) {
-	if (!configs.notifications) {
-		return false;
-	}
-	const config = Object.assign(
-		{
-			message: message,
-		},
-		{
-			icon: path.resolve(__dirname, '../../icon.png'),
-			title: 'liferay-osgi-watch',
-			timeout: 8,
-		},
-	);
-	notifier.notify(config);
+  if (!configs.notifications) {
+    return false;
+  }
+  const config = Object.assign(
+    {
+      message: message,
+    },
+    {
+      icon: path.resolve(__dirname, '../../icon.png'),
+      title: 'liferay-osgi-watch',
+      timeout: 8,
+    }
+  );
+  notifier.notify(config);
 }
 
 module.exports = notify;

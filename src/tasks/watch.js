@@ -7,37 +7,37 @@ const notify = require('../util/notify');
 const runSequence = require('run-sequence');
 
 gulp.task('watch', ['unjar'], function(done) {
-	const start = process.hrtime();
+  const start = process.hrtime();
 
-	runSequence('build', 'install', () => {
-		log.duration('startup', start);
+  runSequence('build', 'install', () => {
+    log.duration('startup', start);
 
-		log.info('watch', `Listening for changes`);
+    log.info('watch', `Listening for changes`);
 
-		if (global.browserSync) {
-			runSequence('browser-sync');
-		}
+    if (global.browserSync) {
+      runSequence('browser-sync');
+    }
 
-		Object.keys(configs.builders).forEach(name => {
-			const builder = configs.builders[name];
+    Object.keys(configs.builders).forEach(name => {
+      const builder = configs.builders[name];
 
-			gulp.task(`watch-${name}`, () => {
-				let sequence = [];
+      gulp.task(`watch-${name}`, () => {
+        let sequence = [];
 
-				sequence.push(`build-${name}`);
-				if (!builder.skipInstall) {
-					sequence.push('install');
-				}
-				sequence.push('notify');
+        sequence.push(`build-${name}`);
+        if (!builder.skipInstall) {
+          sequence.push('install');
+        }
+        sequence.push('notify');
 
-				runSequence(...sequence);
-			});
+        runSequence(...sequence);
+      });
 
-			gulp.watch(builder.glob, [`watch-${name}`]);
-		});
+      gulp.watch(builder.glob, [`watch-${name}`]);
+    });
 
-		notify('Ready! Waiting for changes.');
+    notify('Ready! Waiting for changes.');
 
-		done();
-	});
+    done();
+  });
 });

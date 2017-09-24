@@ -6,16 +6,16 @@ const log = require('../util/log');
 const runSequence = require('run-sequence');
 
 gulp.task('build', done => {
-	const start = process.hrtime();
+  const start = process.hrtime();
 
-	log.info('build', 'Building entire project');
+  log.info('build', 'Building entire project');
 
-	const promises = Object.keys(configs.builders).map(
-		name => new Promise(resolve => runSequence(`build-${name}`, resolve)),
-	);
+  const promises = Object.keys(configs.builders).map(
+    name => new Promise(resolve => runSequence(`build-${name}`, resolve))
+  );
 
-	Promise.all(promises).then(() => {
-		log.duration('build', start);
-		done();
-	});
+  Promise.all(promises).then(() => {
+    log.duration('build', start);
+    done();
+  });
 });

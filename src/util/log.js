@@ -7,7 +7,7 @@ const pretty = require('pretty-hrtime');
  * @return {void}
  */
 export function info(source, ...messages) {
-	log({ fg: 'magenta' }, source, ...messages);
+  log({fg: 'magenta'}, source, ...messages);
 }
 
 /**
@@ -16,9 +16,9 @@ export function info(source, ...messages) {
  * @return {void}
  */
 export function duration(source, start) {
-	const duration = pretty(process.hrtime(start));
+  const duration = pretty(process.hrtime(start));
 
-	log({ fg: 'green' }, source, `took: ${duration}`);
+  log({fg: 'green'}, source, `took: ${duration}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export function duration(source, start) {
  * @return {void}
  */
 export function warn(source, ...messages) {
-	log({ fg: 'white', bg: 'yellow' }, source, 'WARNING:', ...messages);
+  log({fg: 'white', bg: 'yellow'}, source, 'WARNING:', ...messages);
 }
 
 /**
@@ -36,11 +36,11 @@ export function warn(source, ...messages) {
  * @return {void}
  */
 export function error(source, error) {
-	if (error.message) {
-		error = error.message;
-	}
+  if (error.message) {
+    error = error.message;
+  }
 
-	log({ fg: 'white', bg: 'red' }, source, 'ERROR:', error);
+  log({fg: 'white', bg: 'red'}, source, 'ERROR:', error);
 }
 
 /**
@@ -50,15 +50,13 @@ export function error(source, error) {
  * @param {String} messages
  * @return {void}
  */
-function log({ fg = null, bg = null } = {}, source, ...messages) {
-	if (fg) {
-		source = gutil.colors[fg](source);
-	}
-	if (bg) {
-		source = gutil.colors[`bg${bg[0].toUpperCase()}${bg.substr(1)}`](
-			source,
-		);
-	}
+function log({fg = null, bg = null} = {}, source, ...messages) {
+  if (fg) {
+    source = gutil.colors[fg](source);
+  }
+  if (bg) {
+    source = gutil.colors[`bg${bg[0].toUpperCase()}${bg.substr(1)}`](source);
+  }
 
-	gutil.log(source, ...messages);
+  gutil.log(source, ...messages);
 }

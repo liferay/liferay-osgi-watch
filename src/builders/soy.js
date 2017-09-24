@@ -13,58 +13,46 @@ const replaceAmdDefine = require('../util/replaceAmdDefine');
 const soyDeps = require('../util/soyDeps');
 
 gulp.task('build-soy', done => {
-	const start = process.hrtime();
-	const cfg = configs.builders.soy;
+  const start = process.hrtime();
+  const cfg = configs.builders.soy;
 
-	log.info('build-soy', 'Compiling soy files');
+  log.info('build-soy', 'Compiling soy files');
 
-	// Only run it if there are files because soyDeps() can take a while since
-	// it calls gradle.
-	const files = glob.sync(cfg.glob);
-	if (files.length === 0) {
-		log.duration('build-soy', start);
-		done();
-		return;
-	}
+  // Only run it if there are files because soyDeps() can take a while since
+  // it calls gradle.
+  const files = glob.sync(cfg.glob);
+  if (files.length === 0) {
+    log.duration('build-soy', start);
+    done();
+    return;
+  }
 
-	soyDeps().then(soyDependencies => {
-		gulp
-			.src(cfg.glob)
-			.pipe(plumber())
-			.pipe(
-				gulp.dest(
-					path.join(configs.pathExploded, 'META-INF/resources'),
-				),
-			)
-			.pipe(
-				compileSoy({
-					handleError: error => console.error(error),
-					soyDeps: soyDependencies,
-					src: cfg.glob,
-				}),
-			)
-			.pipe(cache('build-soy'))
-			.pipe(
-				gulp.dest(
-					path.join(configs.pathExploded, 'META-INF/resources'),
-				),
-			)
-			.pipe(
-				buildAmd({
-					base: path.join(configs.pathExploded, 'META-INF/resources'),
-					cacheNamespace: 'transpile',
-					moduleName: '',
-				}),
-			)
-			.pipe(replaceAmdDefine())
-			.pipe(
-				gulp.dest(
-					path.join(configs.pathExploded, 'META-INF/resources'),
-				),
-			)
-			.on('end', () => {
-				log.duration('build-soy', start);
-				done();
-			});
-	});
+  soyDeps().then(soyDependencies => {
+    gulp
+      .src(cfg.glob)
+      .pipe(plumber())
+      .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
+      .pipe(
+        compileSoy({
+          handleError: error => console.error(error),
+          soyDeps: soyDependencies,
+          src: cfg.glob,
+        })
+      )
+      .pipe(cache('build-soy'))
+      .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
+      .pipe(
+        buildAmd({
+          base: path.join(configs.pathExploded, 'META-INF/resources'),
+          cacheNamespace: 'transpile',
+          moduleName: '',
+        })
+      )
+      .pipe(replaceAmdDefine())
+      .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
+      .on('end', () => {
+        log.duration('build-soy', start);
+        done();
+      });
+  });
 });
