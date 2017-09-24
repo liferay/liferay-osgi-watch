@@ -17,6 +17,7 @@ gulp.task('unzip-portal-common-css', [], done => {
 
   fs.stat('build/portal-common-css', (err, stats) => {
     if (stats && stats.isDirectory()) {
+      log.duration('unzip-portal-common-css', start);
       done();
       return;
     }
