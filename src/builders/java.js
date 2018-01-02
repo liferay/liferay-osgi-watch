@@ -19,12 +19,6 @@ const buildGradleArgs = projects => {
     'jar',
   ];
   const args = ['compileJava'];
-  projects.forEach(project =>
-    skippedTasks.forEach(task => {
-      args.push('-x');
-      args.push(project + ':' + task);
-    })
-  );
   skippedTasks.forEach(task => {
     args.push('-x');
     args.push(task);
