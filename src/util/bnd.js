@@ -63,6 +63,22 @@ export function getSymbolicName(dir) {
 
 /**
  * @param {String} dir
+ * @return {String}
+ */
+export function getWebContextPath(dir) {
+  return getProperty(
+    dir,
+    'Web-ContextPath',
+    data => data['liferayTheme']['distName'],
+    (buildPropertiesFile, pluginPackageFile, resolve, reject, defaultValue) => {
+      resolve(path.basename(process.cwd()));
+    },
+    path.basename(process.cwd())
+  );
+}
+
+/**
+ * @param {String} dir
  * @param {String} property
  * @param {function} getPackageJSONValue
  * @param {function} getPluginPackageValue
