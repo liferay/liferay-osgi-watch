@@ -28,12 +28,18 @@ readJson(
 
 module.exports = () =>
   tap(file => {
-    const resourcesPath = path.relative(
+    const cfg = configs.builders['javascript-es6'].config;
+    let resourcesPath = path.relative(
       process.cwd(),
-      file.path
-        .replace(configs.pathExploded + '/META-INF/resources', '')
-        .replace('.js', '')
+      file.path.replace(configs.pathExploded + '/META-INF/resources', '')
     );
+    const defineEndsWithJs = cfg.defineEndsWithJs;
+    const keepExtension = defineEndsWithJs.filter(item => {
+      return resourcesPath.endsWith(item);
+    });
+    if (keepExtension.length === 0) {
+      resourcesPath = resourcesPath.replace('.js', '');
+    }
     file.contents = new Buffer(
       String(file.contents).replace(
         /define\(\[/g,

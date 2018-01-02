@@ -20,7 +20,10 @@
 			"glob": [
 				"src/main/resources/META-INF/resources/**/*.es.js"
 			],
-			"skipInstall": true
+			"skipInstall": true,
+			"config": {
+				"defineEndsWithJs": [".soy.js"]
+			}
 		},
 		"jsp": {
 			"glob": "src/main/resources/META-INF/resources/**/*.jsp"
