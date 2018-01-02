@@ -18,8 +18,7 @@
 		},
 		"javascript-es6": {
 			"glob": [
-				"src/main/resources/META-INF/resources/**/*.es.js",
-				"!src/main/resources/META-INF/resources/**/*.js"
+				"src/main/resources/META-INF/resources/**/*.es.js"
 			],
 			"skipInstall": true
 		},
