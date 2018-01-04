@@ -8,6 +8,7 @@ const gulp = require('gulp');
 const jsDeps = require('../util/jsDeps');
 const log = require('../util/log');
 const path = require('path');
+const plumber = require('../util/plumber');
 const replaceAmdDefine = require('../util/replaceAmdDefine');
 
 gulp.task('build-javascript-es6', ['build-soy'], done => {
@@ -19,6 +20,7 @@ gulp.task('build-javascript-es6', ['build-soy'], done => {
   return jsDeps().then(jsDependencies => {
     return gulp
       .src(cfg.glob)
+      .pipe(plumber.plumb('build-javascript-es6'))
       .pipe(cache('build-javascript'))
       .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
       .pipe(filter(['**/*.js']))

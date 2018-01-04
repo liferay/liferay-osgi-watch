@@ -20,7 +20,8 @@ const copyJsDependency = dependency => {
         bnd.getSymbolicName(projectDir),
         bnd.getWebContextPath(projectDir),
       ]).then(info => {
-        const sourceName = `${projectDir}/src/main/resources/META-INF/resources`;
+        const sourceName =
+          `${projectDir}/src/main/` + 'resources/META-INF/resources';
         const targetName = 'node_modules' + info[1];
         ncp(sourceName, targetName, error => {
           if (error) {

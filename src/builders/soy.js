@@ -8,7 +8,7 @@ const glob = require('glob');
 const gulp = require('gulp');
 const log = require('../util/log');
 const path = require('path');
-const plumber = require('gulp-plumber');
+const plumber = require('../util/plumber');
 const replaceAmdDefine = require('../util/replaceAmdDefine');
 const soyDeps = require('../util/soyDeps');
 
@@ -30,7 +30,7 @@ gulp.task('build-soy', done => {
   soyDeps().then(soyDependencies => {
     gulp
       .src(cfg.glob)
-      .pipe(plumber())
+      .pipe(plumber.plumb('build-soy'))
       .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
       .pipe(
         compileSoy({

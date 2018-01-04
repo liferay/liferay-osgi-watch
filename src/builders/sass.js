@@ -6,6 +6,7 @@ const gogo = require('../util/gogo');
 const gulp = require('gulp');
 const log = require('../util/log');
 const path = require('path');
+const plumber = require('../util/plumber');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
 const unzip = require('gulp-unzip');
@@ -63,6 +64,7 @@ gulp.task('build-sass', ['unzip-portal-common-css'], done => {
 
   return gulp
     .src(cfg.glob)
+    .pipe(plumber.plumb('build-sass'))
     .pipe(
       sass({
         includePaths: ['build/portal-common-css'],
