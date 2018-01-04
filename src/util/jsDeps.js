@@ -18,16 +18,18 @@ const copyJsDependency = dependency => {
       const projectDir = path.resolve(path.join(relativeDir, parts.join('/')));
       bnd.getWebContextPath(projectDir).then(webContextPath => {
         let resourcesPath = `${projectDir}/classes/META-INF/resources`;
-        if (!fs.existsSync(resourcesPath)) {
-          resourcesPath = `${projectDir}/build/resources/main/META-INF/resources`;
-        }
-        const targetName = `node_modules${webContextPath}`;
-        ncp(resourcesPath, targetName, error => {
+        fs.stat(resourcesPath, error => {
           if (error) {
-            reject(error);
-          } else {
-            resolve(targetName);
+            resourcesPath = `${projectDir}/build/resources/main/META-INF/resources`;
           }
+          const targetName = `node_modules${webContextPath}`;
+          ncp(resourcesPath, targetName, error => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(targetName);
+            }
+          });
         });
       });
     } else {
