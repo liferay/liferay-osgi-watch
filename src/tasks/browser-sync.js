@@ -1,9 +1,7 @@
 'use strict';
 
 const browserSync = require('browser-sync').create('liferay-osgi-watch');
-const configs = require('../util/configs');
 const gulp = require('gulp');
-const path = require('path');
 
 gulp.task('browser-sync', function() {
   browserSync.init({

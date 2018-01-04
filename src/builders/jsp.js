@@ -1,6 +1,5 @@
 'use strict';
 
-const browserSync = require('browser-sync');
 const configs = require('../util/configs');
 const gulp = require('gulp');
 const log = require('../util/log');
