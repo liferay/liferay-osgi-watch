@@ -7,14 +7,6 @@ const path = require('path');
 
 gulp.task('browser-sync', function() {
   browserSync.init({
-    files: [
-      {
-        match: path.join(configs.pathExploded, '**/*.*'),
-        options: {
-          ignored: '**/*.jsp',
-        },
-      },
-    ],
     rewriteRules: [
       {
         match: /8080/g,

@@ -16,9 +16,6 @@ gulp.task('build-jsp', [], function(done) {
     .src(cfg.glob)
     .pipe(gulp.dest(path.join(configs.pathExploded, 'META-INF/resources')))
     .on('end', () => {
-      if (global.browserSync) {
-        browserSync.get('liferay-osgi-watch').reload();
-      }
       log.duration('build-jsp', start);
       done();
     });
