@@ -2,23 +2,26 @@
 
 const browserSync = require('browser-sync').create('liferay-osgi-watch');
 const gulp = require('gulp');
+const portfinder = require('portfinder');
 
 gulp.task('browser-sync', function() {
-  browserSync.init({
-    rewriteRules: [
-      {
-        match: /8080/g,
-        replace: '8081',
+  return portfinder.getPortPromise().then(port => {
+    browserSync.init({
+      rewriteRules: [
+        {
+          match: /8080/g,
+          replace: port,
+        },
+      ],
+      proxy: {
+        target: 'localhost:8080',
+        ws: true,
       },
-    ],
-    proxy: {
-      target: 'localhost:8080',
-      ws: true,
-    },
-    open: false,
-    port: 8081,
-    ui: false,
-    reloadDelay: 500,
-    reloadOnRestart: true,
+      open: false,
+      port: port,
+      ui: false,
+      reloadDelay: 500,
+      reloadOnRestart: true,
+    });
   });
 });
