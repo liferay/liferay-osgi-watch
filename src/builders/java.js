@@ -6,9 +6,8 @@ const fs = require('fs');
 const gradle = require('../util/gradle');
 const gulp = require('gulp');
 const log = require('../util/log');
-const projectDeps = require('../util/projectDeps');
 
-const buildGradleArgs = projects => {
+const buildGradleArgs = () => {
   const skippedTasks = [
     'transpileJS',
     'configJSModules',
@@ -32,28 +31,37 @@ gulp.task('build-java', done => {
 
   log.info('build-java', 'Compiling Java classes');
 
-  projectDeps().then(projects => {
-    let compileResult = fs.existsSync('build.gradle')
-      ? gradle(buildGradleArgs(projects))
-      : ant(['compile']);
-
-    compileResult.then(
-      compileOutput => {
-        gulp
-          .src(cfg.config.outputGlob)
-          .pipe(gulp.dest(configs.pathExploded))
-          .on('end', () => {
-            log.duration('build-java', start);
-            done();
-          });
-      },
-      compileError => {
-        log.error(
-          'build-java',
-          'Java classes could not be compiled (👆👆 check compiler output 👆👆)'
-        );
-        done();
+  return new Promise((resolve, reject) => {
+    fs.stat('build.gradle', error => {
+      let compileResult;
+      if (error) {
+        compileResult = ant(['compile']);
+      } else {
+        compileResult = gradle(buildGradleArgs());
       }
-    );
+      compileResult
+        .then(
+          compileOutput => {
+            gulp
+              .src(cfg.config.outputGlob)
+              .pipe(gulp.dest(configs.pathExploded))
+              .on('end', () => {
+                log.duration('build-java', start);
+                resolve();
+              });
+          },
+          compileError => {
+            log.error(
+              'build-java',
+              'Java classes could not be compiled (👆👆 check compiler output 👆👆)'
+            );
+            resolve();
+          }
+        )
+        .catch(() => {
+          log.error('build-java', 'error');
+          reject('failed');
+        });
+    });
   });
 });

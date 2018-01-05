@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"browser-sync": "^2.11.2",
+		"fs-extra": "^5.0.0",
 		"gogo-shell": "0.0.5",
 		"gulp": "^3.9.1",
 		"gulp-cached": "^1.1.1",
@@ -22,7 +23,6 @@
 		"gulp-util": "^3.0.8",
 		"metal-tools-build-amd": "^3.0.3",
 		"metal-tools-soy": "^5.0.0",
-		"ncp": "^2.0.0",
 		"node-notifier": "^5.1.2",
 		"portfinder": "^1.0.13",
 		"pretty-hrtime": "^1.0.3",

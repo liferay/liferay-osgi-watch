@@ -33,38 +33,42 @@ module.exports = () => {
   return new Promise((resolve, reject) => {
     if (global.soyDeps) {
       resolve(global.soyDeps);
-    } else if (fs.existsSync('build.gradle')) {
-      gradle(['dependencies', '--configuration', 'soyCompile']).then(
-        gradleOutput => {
-          let soyDeps = Object.keys(configs.soyCompile || []).map(
-            makeSoyDepGlob
-          );
-          soyDeps = soyDeps.concat(
-            gradleOutput
-              .split('\n')
-              .filter(line => line.indexOf('\\--- ') === 0)
-              .map(depLine => parseGradleDependencyOutput(depLine))
-          );
-          Promise.all(soyDeps).then(dependencies => {
-            dependencies.push(
-              'node_modules/lexicon*/src/**/*.soy',
-              'node_modules/metal*/src/**/*.soy'
-            );
-            global.soyDeps = dependencies;
-            resolve(dependencies);
-          });
-        },
-        error => {
-          log.warn(
-            'soyDeps',
-            'Unable to get soyCompile dependencies from gradle. ' +
-              'Trying to continue without it...'
-          );
-          resolve([]);
-        }
-      );
     } else {
-      resolve([]);
+      fs.stat('build.gradle', error => {
+        if (error) {
+          resolve([]);
+        } else {
+          gradle(['dependencies', '--configuration', 'soyCompile']).then(
+            gradleOutput => {
+              let soyDeps = Object.keys(configs.soyCompile || []).map(
+                makeSoyDepGlob
+              );
+              soyDeps = soyDeps.concat(
+                gradleOutput
+                  .split('\n')
+                  .filter(line => line.indexOf('\\--- ') === 0)
+                  .map(depLine => parseGradleDependencyOutput(depLine))
+              );
+              Promise.all(soyDeps).then(dependencies => {
+                dependencies.push(
+                  'node_modules/lexicon*/src/**/*.soy',
+                  'node_modules/metal*/src/**/*.soy'
+                );
+                global.soyDeps = dependencies;
+                resolve(dependencies);
+              });
+            },
+            error => {
+              log.warn(
+                'soyDeps',
+                'Unable to get soyCompile dependencies from gradle. ' +
+                  'Trying to continue without it...'
+              );
+              resolve([]);
+            }
+          );
+        }
+      });
     }
   });
 };
