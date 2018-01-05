@@ -17,7 +17,7 @@ gulp.task('browser-sync', function() {
         target: 'localhost:8080',
         ws: true,
       },
-      open: false,
+      open: true,
       port: port,
       ui: false,
       reloadDelay: 500,
