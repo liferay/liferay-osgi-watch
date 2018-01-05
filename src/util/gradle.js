@@ -74,3 +74,17 @@ module.exports = args => {
     });
   });
 };
+
+module.exports.dependencies = type => {
+  const regexDependencies = new RegExp(
+    `(?:${type})\\s*project\\(?['"](.*)['"]`,
+    'g'
+  );
+  const content = fs.readFileSync('build.gradle').toString();
+  const dependencies = [];
+  let match;
+  while ((match = regexDependencies.exec(content)) != null) {
+    dependencies.push(match[1]);
+  }
+  return dependencies;
+};

@@ -1,10 +1,8 @@
 'use strict';
 
 const bnd = require('./bnd');
-const configs = require('./configs');
 const fs = require('fs');
 const gradle = require('./gradle');
-const log = require('./log');
 const path = require('path');
 
 const makeSoyDepGlob = dependency =>
@@ -12,20 +10,13 @@ const makeSoyDepGlob = dependency =>
 
 const parseGradleDependencyOutput = dependency => {
   return new Promise(resolve => {
-    const cleanLine = dependency.replace('\\--- ', '');
+    const parts = dependency.substr(1).split(':');
+    const relativeDir = path.relative(parts.join('/'), process.cwd());
+    const projectDir = path.resolve(path.join(relativeDir, parts.join('/')));
 
-    if (cleanLine.startsWith('project')) {
-      const relativeFormat = cleanLine.replace('project ', '');
-      const parts = relativeFormat.substr(1).split(':');
-      const relativeDir = path.relative(parts.join('/'), process.cwd());
-      const projectDir = path.resolve(path.join(relativeDir, parts.join('/')));
-
-      bnd.getSymbolicName(projectDir).then(symbolicName => {
-        resolve(makeSoyDepGlob(symbolicName));
-      });
-    } else {
-      resolve(cleanLine.split(':')[1]);
-    }
+    bnd.getSymbolicName(projectDir).then(symbolicName => {
+      resolve(makeSoyDepGlob(symbolicName));
+    });
   });
 };
 
@@ -38,35 +29,19 @@ module.exports = () => {
         if (error) {
           resolve([]);
         } else {
-          gradle(['dependencies', '--configuration', 'soyCompile']).then(
-            gradleOutput => {
-              let soyDeps = Object.keys(configs.soyCompile || []).map(
-                makeSoyDepGlob
+          let jsDeps = gradle
+            .dependencies('jsCompile')
+            .map(depLine => parseGradleDependencyOutput(depLine));
+          Promise.all(jsDeps)
+            .then(dependencies => {
+              dependencies.push(
+                'node_modules/lexicon*/src/**/*.soy',
+                'node_modules/metal*/src/**/*.soy'
               );
-              soyDeps = soyDeps.concat(
-                gradleOutput
-                  .split('\n')
-                  .filter(line => line.indexOf('\\--- ') === 0)
-                  .map(depLine => parseGradleDependencyOutput(depLine))
-              );
-              Promise.all(soyDeps).then(dependencies => {
-                dependencies.push(
-                  'node_modules/lexicon*/src/**/*.soy',
-                  'node_modules/metal*/src/**/*.soy'
-                );
-                global.soyDeps = dependencies;
-                resolve(dependencies);
-              });
-            },
-            error => {
-              log.warn(
-                'soyDeps',
-                'Unable to get soyCompile dependencies from gradle. ' +
-                  'Trying to continue without it...'
-              );
-              resolve([]);
-            }
-          );
+              global.soyDeps = dependencies;
+              resolve(dependencies);
+            })
+            .catch(reject);
         }
       });
     }
