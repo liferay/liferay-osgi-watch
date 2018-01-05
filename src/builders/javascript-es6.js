@@ -15,9 +15,11 @@ gulp.task('build-javascript-es6', ['build-soy'], done => {
   const start = process.hrtime();
   const cfg = configs.builders['javascript-es6'];
 
-  log.info('build-javascript-es6', 'Transpiling ES6 files');
+  log.info('build-javascript-es6', 'Preparing dependencies');
 
   return jsDeps().then(jsDependencies => {
+    log.info('build-javascript-es6', 'Transpiling ES6 files');
+
     return gulp
       .src(cfg.glob)
       .pipe(plumber.plumb('build-javascript-es6'))
