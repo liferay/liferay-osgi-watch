@@ -18,23 +18,25 @@ gulp.task('watch', ['unjar'], function(done) {
       runSequence('browser-sync');
     }
 
-    Object.keys(configs.builders).forEach(name => {
-      const builder = configs.builders[name];
+    Object.keys(configs.builders)
+      .filter(name => configs.skip.indexOf(name) === -1)
+      .forEach(name => {
+        const builder = configs.builders[name];
 
-      gulp.task(`watch-${name}`, () => {
-        let sequence = [];
+        gulp.task(`watch-${name}`, () => {
+          let sequence = [];
 
-        sequence.push(`build-${name}`);
-        if (!builder.skipInstall) {
-          sequence.push('install');
-        }
-        sequence.push('notify');
+          sequence.push(`build-${name}`);
+          if (!builder.skipInstall) {
+            sequence.push('install');
+          }
+          sequence.push('notify');
 
-        runSequence(...sequence);
+          runSequence(...sequence);
+        });
+
+        gulp.watch(builder.glob, [`watch-${name}`]);
       });
-
-      gulp.watch(builder.glob, [`watch-${name}`]);
-    });
 
     notify('Ready! Waiting for changes.');
 

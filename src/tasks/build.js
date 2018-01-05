@@ -10,9 +10,9 @@ gulp.task('build', done => {
 
   log.info('build', 'Building entire project');
 
-  const promises = Object.keys(configs.builders).map(
-    name => new Promise(resolve => runSequence(`build-${name}`, resolve))
-  );
+  const promises = Object.keys(configs.builders)
+    .filter(name => configs.skip.indexOf(name) === -1)
+    .map(name => new Promise(resolve => runSequence(`build-${name}`, resolve)));
 
   Promise.all(promises).then(() => {
     log.duration('build', start);
