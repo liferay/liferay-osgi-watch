@@ -4,6 +4,8 @@ const browserSync = require('browser-sync').create('liferay-osgi-watch');
 const gulp = require('gulp');
 const portfinder = require('portfinder');
 
+portfinder.basePort = 9080;
+
 gulp.task('browser-sync', function() {
   return portfinder.getPortPromise().then(port => {
     browserSync.init({
