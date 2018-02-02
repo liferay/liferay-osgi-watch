@@ -1,6 +1,7 @@
 'use strict';
 
 const bnd = require('./bnd');
+const configs = require('./configs');
 const fs = require('fs-extra');
 const gradle = require('./gradle');
 const log = require('./log');
@@ -17,7 +18,7 @@ const copyJsDependency = dependency => {
         let resourcesPath = `${projectDir}/classes/META-INF/resources`;
         fs.stat(resourcesPath, error => {
           if (error) {
-            resourcesPath = `${projectDir}/build/resources/main/META-INF/resources`;
+            resourcesPath = `${projectDir}/${configs.buildPath}/resources/main/META-INF/resources`;
           }
           fs.stat(resourcesPath, error => {
             if (error) {
